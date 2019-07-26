@@ -126,5 +126,5 @@ import { fql } from 'fql'
 ```
 
 ```
-const fql = require('../dist/index').fql;
+const fql = require('fql').fql;
 ```
