@@ -76,17 +76,17 @@ __sum: {
 ```
 
 Since the above has a function within the function - we need to make our functions "fql-aware".
-In our case above, the sum function needs to be fql aware, so that when it gets a multiply function instead of a number - it can resolve it.
+In our case above, the sum function needs to be fql aware, so that when it gets a multiply function instead of a number - it can resolve it. This is as simple as wrapping `number` so it becomes `fql(fns, number)`.
 
 eg.
 
 ```javascript
   const sum = ({ numbers, fns }) =>
     numbers.reduce((accumulatedValue, number) =>
-      accumulatedValue + (typeof number === 'number' ? number : fql(fns, number)), 0)
+      accumulatedValue + fql(fns, number), 0)
   
   const multiply = ({ numbers, fns })  =>
-  	numbers.reduce((accumulatedValue, number) => accumulatedValue * number, 1)
+  	numbers.reduce((accumulatedValue, number) => accumulatedValue * fql(fns, number), 1)
   
   const fqlFunctions = { sum, multiply };
   
