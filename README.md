@@ -30,6 +30,7 @@ The double underscore notation makes it easy to search for all function calls in
 
 Unlike functions themselves, fql can be sent across server boundaries and from one language to another.
 
+```javascript
 fetch(
     'https://my-api/calculator', {
     method: 'POST'
@@ -39,6 +40,7 @@ fetch(
         }
     })
 )
+```
 
 fql's function mappper is a tiny import that makes it easy to call functions using fql...
 
