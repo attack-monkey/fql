@@ -3,6 +3,8 @@ fql |> function query language
 
 fql uses JSON to transport function calls.
 
+> note that we represent the JSON throughout this doc as javascript objects...
+
 eg.
 
 ```javascript
