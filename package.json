@@ -1,0 +1,29 @@
+{
+  "name": "fql",
+  "version": "1.0.0",
+  "description": "function query language",
+  "main": "index.js",
+  "scripts": {
+    "test": "test",
+    "test-dist-js": "node demo/index.js",
+    "test-dist-ts": "ts-node demo/index.ts",
+    "test-dist-ts-src": "ts-node demo/index.ts",
+    "build": "parcel build src/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/attack-monkey/fql.git"
+  },
+  "keywords": [
+    "fql"
+  ],
+  "author": "attack-monkey",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/attack-monkey/fql/issues"
+  },
+  "homepage": "https://github.com/attack-monkey/fql#readme",
+  "devDependencies": {
+    "typescript": "^3.5.3"
+  }
+}

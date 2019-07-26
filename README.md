@@ -115,3 +115,16 @@ Use cases for fql
 fql vs graphQl
 
 Where graphQl at it's core is about asking for specific fields on objects, fql is about making expressive function calls across server and language boundaries.
+
+Install
+-----------------
+
+not yet on npm ... but npm i fql
+
+```
+import { fql } from 'fql'
+```
+
+```
+const fql = require('../dist/index').fql;
+```
