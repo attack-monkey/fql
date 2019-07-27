@@ -1,7 +1,7 @@
-fql |> function query language
+functionql |> function query language
 ==============================
 
-fql uses JSON to transport function calls.
+functionql (fql) uses JSON to transport function calls.
 
 eg.
 
@@ -65,7 +65,7 @@ Custom interpreters are easy to write, or you can use this one...
 fql's js interpreter makes it easy to call functions using fql...
 
 ```javascript
-import { fql } from 'fql';
+import { fql } from 'functionql';
 
 const sum = ({ a, b }) => a + b
 
@@ -173,7 +173,7 @@ And using the chain utility provided, can even method-chain...
 
 ```javascript
 
-import { fql, chain } from '../src'
+import { fql, chain } from 'functionql'
 
 const query = {
   __chain: {
@@ -217,12 +217,12 @@ Where graphQl at it's core is about asking for specific fields on objects, fql i
 Install
 -----------------
 
-not yet on npm ... but npm i fql
+not yet on npm ... but npm i functionql
 
 ```
-import { fql } from 'fql'
+import { fql } from 'functionql'
 ```
 
 ```
-const fql = require('fql').fql;
+const fql = require('functionql').fql;
 ```
