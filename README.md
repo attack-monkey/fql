@@ -217,12 +217,15 @@ Where graphQl at it's core is about asking for specific fields on objects, fql i
 Install
 -----------------
 
-not yet on npm ... but npm i functionql
+es6 / typescript
 
 ```
-import { fql } from 'functionql'
+import { fql, chain } from 'functionql'
 ```
+
+node
 
 ```
 const fql = require('functionql').fql;
+const chain = require('functionql').chain;
 ```
