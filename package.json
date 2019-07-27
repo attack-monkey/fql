@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "test",
-    "test-dist-js": "node demo/index.js",
-    "test-dist-ts": "ts-node demo/index.ts",
-    "test-dist-ts-src": "ts-node demo/index.ts",
+    "start": "ts-node demo/src-test-ts.ts",
+    "test-dist-js": "node demo/dist-test-js.js",
+    "test-dist-ts": "ts-node demo/dist-test-ts.ts",
     "build": "parcel build src/index.ts"
   },
   "repository": {
@@ -25,5 +25,8 @@
   "homepage": "https://github.com/attack-monkey/fql#readme",
   "devDependencies": {
     "typescript": "^3.5.3"
+  },
+  "dependencies": {
+    "tslib": "^1.10.0"
   }
 }

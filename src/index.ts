@@ -1,12 +1,9 @@
+import { isFql } from './fns/is-fql'
+import { fqlify } from './fns/fqlify'
+import { chain as chainMethod } from './fns/aux/chain'
+
 export const fql = (fns, query) => {
   try {
-    const isFql = (input) => (typeof input === 'object' && Object.keys(input)[0].slice(0, 2) === '__')
-    const fqlify = (fns, query) => {
-      const fnKey = Object.keys(query)[0].replace('__', '')
-      const fnInput = Object.values(query)[0]
-      const fnInputWithFns = Object.assign({}, fnInput, { fns })
-      return fns[fnKey].call(null, fnInputWithFns)
-    }
     return isFql(query)
       ? fqlify(fns, query)
       : query
@@ -15,3 +12,5 @@ export const fql = (fns, query) => {
     console.error(e)
   }
 }
+
+export const chain = chainMethod;

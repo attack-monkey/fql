@@ -3,22 +3,20 @@ fql |> function query language
 
 fql uses JSON to transport function calls.
 
-> note that we represent the JSON throughout this doc as javascript objects...
-
 eg.
 
-```javascript
+```json
 {
-  __sum: {
-    a: 6,
-    b: 4
+  "__sum": {
+    "a": 6,
+    "b": 4
   }
 }
 ```
 
 converts to `sum({ a: 6, b: 4 })`
 
-which expects to map to a function that looks like...
+which expects to map to a function that looks something like...
 
 ```javascript
 const sum = ({ a, b }) => a + b.
@@ -27,6 +25,9 @@ const sum = ({ a, b }) => a + b.
 The double underscore notation makes it easy to search for all function calls in a blob of json.
 
 > Just ctrl+f __
+
+Why fql?
+---------------------------------
 
 Unlike functions themselves, fql can be sent across server boundaries and from one language to another.
 
@@ -42,75 +43,172 @@ fetch(
 )
 ```
 
-fql's function mappper is a tiny import that makes it easy to call functions using fql...
+Functions can very expressive and can even include functions within functions...
+
+```javascript
+
+__sum: {
+  a: {
+    __product: {
+      a: 5, 
+      b: 5
+    }
+  },
+  b: 3
+}
+    
+```
+
+fql is just a simple notation, that conveys meaning.
+Custom interpreters are easy to write, or you can use this one...
+
+fql's js interpreter makes it easy to call functions using fql...
 
 ```javascript
 import { fql } from 'fql';
 
-const fqlFunctions = {
-    sum: ({ a, b }) => a + b
-}
+const sum = ({ a, b }) => a + b
 
-const query = {
-    __sum: {
-        a: 1,
-        b: 10
-    }
-}
-
-fql(fqlFunctions, query) // 11
+fql({ sum }, {
+  __sum: {
+    a: 6,
+    b: 3
+  }
+}) 
+// 9
 ```
 
-Functions can be called within functions...
+The first argument take a map of functions.
+The name assigned to the function should match the that in the query.
+
+The second argument is the fql query.
+
+### The fql interpreter and functions within functions
+
+Let's take the following...
 
 ```javascript
+
 __sum: {
-    numbers: [
-        10, 40, 50, {
-            __multiply: {
-                numbers: [50, 2]
-            }
-        }
-    ]
+  a: {
+    __product: {
+      a: 5, 
+      b: 5
+    }
+  },
+  b: 3
 }
+    
 ```
 
 Since the above has a function within the function - we need to make our functions "fql-aware".
-In our case above, the sum function needs to be fql aware, so that when it gets a multiply function instead of a number - it can resolve it. This is as simple as wrapping `number` so it becomes `fql(fns, number)`.
+
+The sum function needs to be fql aware, so that when it gets a product function instead of a number - it can resolve it. 
+
+To do this we need to wrap `a` and `b` in an `fql` function. 
+The fql interpreter will check if the input is an object with double underscore notation.
+If it meets the check, it will process it as fql, otherwise it will just return the input.
+
+> Note how sum and product also get passed a `fns` param in addition to `a` and `b`.
+> This is automatically passed in by the fql interpreter and allows you to utilise the original functions that were provided to the interpreter.
 
 eg.
 
 ```javascript
-  const sum = ({ numbers, fns }) =>
-    numbers.reduce((accumulatedValue, number) =>
-      accumulatedValue + fql(fns, number), 0)
+const sum = ({ a, b, fns }) => 
+  fql(fns, a) + fql(fns, b)
   
-  const multiply = ({ numbers, fns })  =>
-  	numbers.reduce((accumulatedValue, number) => accumulatedValue * fql(fns, number), 1)
+const product = ({ a, b, fns }) => 
+  fql(fns, a) * fql(fns, b)
   
-  const fqlFunctions = { sum, multiply };
-  
-  const query = {
-  	__sum: {
-      numbers: [
-      	10, 40, 50, {
-          __multiply: {
-            numbers: [50, 2]
-          }
-        }
-      ]
-    }
+fql({sum, product}, {
+  __sum: {
+    a: {
+      __product: {
+        a: 5, 
+        b: 5
+      }
+    },
+    b: 3
   }
-
-  fql(fqlFunctions, query) // 200
+})
+  
 ```
+
+Interpreter Advanced
+--------------------
+
+The interpreter can also interpret function calls with anonymous arguments, using the `args` keyword.
+
+```javascript
+
+{
+  __sum: {
+    args: [1, 2]
+  }
+}
+
+```
+
+maps to `sum(1, 2)`
+
+And can perform curry functions using the `curry` key word.
+
+```javascript
+
+{
+  __sum: {
+    curry: [
+      { args: [1, 2] },
+      { args: [3] }
+    ]
+  }
+}
+
+```
+
+maps to `sum(1, 2)(3)`
+
+And using the chain utility provided, can even method-chain...
+
+```javascript
+
+import { fql, chain } from '../src'
+
+const query = {
+  __chain: {
+    chain: [
+      {
+        __sum: {
+          curry: [
+            { args: [5, 5 ] },
+            { args: [3]}
+          ]
+        }
+      },
+      'toString',
+      { 
+        'concat': {
+          args: [' y\'all!!!']
+        }
+      },
+      'toUpperCase'
+    ]
+  }
+}
+
+fql({ chain, sum}, query) // 13 Y'ALL
+
+```
+
+Which maps to `sum(5,5)(3).toString().concat(' y'all').toUpperCase()`
 
 Use cases for fql
 -----------------
 
-- fql provides a very expressive syntax for apis.
-- The fql function mapper has a tiny, tiny footprint.
-- fql is just json, so it's easy to parse and pass around.
+fql provides a very expressive syntax for apis, and since
+fql is just json, it's easy to parse and pass around.
+By providing an fql endpoint in an api, you can then simply POST fql to it.
 
 fql vs graphQl
 

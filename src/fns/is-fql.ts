@@ -1,0 +1,1 @@
+export const isFql = (input) => (typeof input === 'object' && Object.keys(input)[0].slice(0, 2) === '__')
